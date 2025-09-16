@@ -1,0 +1,42 @@
+/* Custom styles for a mediocre HR ERP website */
+
+/* Fix for fixed navbar overlapping content */
+body {
+    padding-top: 56px; /* Adjust this value based on your navbar's height */
+}
+
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* Hero section */
+#home {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Section styling */
+section {
+    padding: 60px 0;
+}
+
+/* Image styling */
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Form button styling */
+.btn-primary {
+    background-color: #343a40;
+    border-color: #343a40;
+}
+
+.btn-primary:hover {
+    background-color: #23272b;
+    border-color: #1d2124;
+}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add employee</title>
+</head>
+<body>
+  {% include 'admin_header.html' %}
+  <br>
+  <h1 style="text-align:center;">Add Employee</h1><br>
+
+  <form action="/save" method="post">
+      Employee Id <input type="text" name="eid" class="form-control">
+      Employee Name <input type="text" name="ename" class="form-control">
+      Employee Email <input type="text" name="email" class="form-control">
+      Employee Mobile <input type="text" name="mob" class="form-control">
+      Employee Designation <input type="text" name="edesig" class="form-control">
+      Employee Salary <input type="text" name="esalary" class="form-control">
+      <br>
+      <center>
+        <input type="submit" value="Register" class="btn btn-danger">
+      </center>
+
+  </form>
+</body>
+</html>

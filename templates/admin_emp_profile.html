@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>employee profile</title>
+</head>
+<body>
+    {% include 'admin_header.html' %}
+    <h1 style="text-align:center;">Employee Profile</h1>
+    <br>
+
+    {% for n in recordlist %}
+
+    <form action="" method="">
+      Employee Id <input type="text" name="eid" value="{{n[0]}}" class="form-control">
+      Employee Name <input type="text" name="ename" value="{{n[1]}}" class="form-control">
+      Employee Email <input type="text" name="email" value="{{n[2]}}" class="form-control">
+      Employee Mobile <input type="text" name="mob" value="{{n[3]}}" class="form-control">
+      Employee Designation <input type="text" name="edesig" value="{{n[4]}}" class="form-control">
+      Employee Salary <input type="text" name="esalary" value="{{n[5]}}" class="form-control">
+      <br>
+      <center>
+        <input type="submit" value="Update" class="btn btn-primary">&nbsp; &nbsp;
+        <input type="submit" value="Delete" class="btn btn-danger">
+      </center>
+
+  </form>
+
+    {% endfor %}
+
+</body>
+</html>
