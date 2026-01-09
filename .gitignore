@@ -1,0 +1,18 @@
+# Python compilation
+__pycache__/
+*.py[cod]
+
+# Virtual Environment (Crucial to ignore)
+venv/
+env/
+.env
+
+# Flask specific (if you use the instance folder)
+instance/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Database (if you are using SQLite)
+*.sqlite3
+*.db
