@@ -1,13 +1,12 @@
 import pymysql
 import os
-import ssl  # <--- NEW IMPORT
+import ssl
 
 from flask import Flask, redirect, render_template, request, url_for
 
 app = Flask(__name__)
 app.secret_key = 'prince'
 
-# 1. Database Configuration
 db_config = {
     'host': os.environ.get('DB_HOST', 'localhost'),
     'user': os.environ.get('DB_USER', 'root'),
@@ -16,11 +15,8 @@ db_config = {
     'port': int(os.environ.get('DB_PORT', 3306))
 }
 
-# 2. Helper function to connect to the database
 def get_db_connection():
     if db_config['host'] in ['localhost', '127.0.0.1']:
-        # --- LOCAL PC MODE ---
-        # Connect explicitly WITHOUT SSL to avoid certificate errors
         print("Connecting to Localhost (No SSL)...")
         return pymysql.connect(
             host=db_config['host'],
@@ -28,11 +24,9 @@ def get_db_connection():
             password=db_config['password'],
             database=db_config['database'],
             port=db_config['port'],
-            ssl=None  # <--- FORCE SSL OFF
+            ssl=None
         )
     else:
-        # --- VERCEL / CLOUD MODE ---
-        # Connect WITH SSL (Required for Aiven)
         print("Connecting to Cloud Database (With SSL)...")
         ca_path = os.path.join(os.path.dirname(__file__), 'ca.pem')
         
@@ -42,7 +36,7 @@ def get_db_connection():
             password=db_config['password'],
             database=db_config['database'],
             port=db_config['port'],
-            ssl={'ca': ca_path} # <--- FORCE SSL ON
+            ssl={'ca': ca_path}
         )
 
 
