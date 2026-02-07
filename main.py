@@ -1,3 +1,6 @@
+import pymysql
+import os
+
 from flask import Flask, render_template, request
 from flask_mysqldb import MySQL
 
@@ -10,6 +13,33 @@ app.config['MYSQL_PASSWORD']='root'
 app.config['MYSQL_DB']='hr_erp_db'
 
 mysql = MySQL(app)
+
+db_config = {
+    'host': 'mysql-12139fd-hr-erp.j.aivencloud.com', # Copy "Host" from Aiven
+    'user': 'avnadmin',                                         # Copy "User" from Aiven
+    'password': 'AVNS_Bpoemtss83b6e7ezoz8',                      # Copy "Password" from Aiven
+    'database': 'defaultdb',                                    # Copy "Database Name" (usually defaultdb)
+    'port': 26797,                                              # Copy "Port" (It will NOT be 3306)
+    'ssl_ca': '/etc/ssl/certs/ca-certificates.crt'              # Required for Aiven (keeps connection secure)
+}
+
+def get_db_connection():
+    # 1. Define the base configuration
+    connection_args = {
+        'host': db_config['host'],
+        'user': db_config['user'],
+        'password': db_config['password'],
+        'database': db_config['database'],
+        'port': db_config['port']
+    }
+
+    # 2. Check if we are on Vercel (Linux) or Windows
+    # Vercel has this file; Windows does not.
+    if os.path.exists('/etc/ssl/certs/ca-certificates.crt'):
+        connection_args['ssl'] = {'ca': '/etc/ssl/certs/ca-certificates.crt'}
+    
+    # 3. Connect using the arguments we built
+    return pymysql.connect(**connection_args)
 
 @app.route("/")
 def home():
