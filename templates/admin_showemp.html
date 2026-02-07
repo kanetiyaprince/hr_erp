@@ -21,7 +21,8 @@ tr:nth-child(even) {background-color: #f2f2f2;}
   {% include 'admin_header.html' %}<br>
   <h1 style="text-align:center;">Show Employee</h1>
 
-    <table>
+    <div class="table-responsive">
+    <table class='table'>
     <tr>
       <th>Employee Id</th>
       <th>Employee Name</th>
@@ -43,5 +44,6 @@ tr:nth-child(even) {background-color: #f2f2f2;}
      {% endfor %}
 
   </table>
+  </div>
 </body>
 </html>
