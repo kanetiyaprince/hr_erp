@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Show Employee</title>
+    <style>
+        table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {background-color: #f2f2f2;}
+    </style>
+</head>
+<body>
+  {% include 'admin_header.html' %}<br>
+  <h1 style="text-align:center;">Show Employee</h1>
+
+    <table>
+    <tr>
+      <th>Employee Id</th>
+      <th>Employee Name</th>
+      <th>Employee Department</th>
+    </tr>
+
+     {% for n in recordlist: %}
+
+    <tr>
+      <td>{{n[0]}}</td>
+      <td>{{n[1]}}</td>
+      <td>{{n[2]}}</td><td>
+  <a href="{{ url_for('admin_updateemp', emp_id=n[0]) }}" class="btn btn-primary">
+    view
+  </a>
+  </td>
+
+
+     {% endfor %}
+
+  </table>
+</body>
+</html>

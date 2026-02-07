@@ -1,0 +1,68 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search EMP</title>
+</head>
+<body>
+  {% include 'admin_header.html' %}<br>
+  <h1 style="text-align:center;">Search Employee</h1>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Search</title>
+    <style>
+        body { font-family: sans-serif; padding: 2rem; }
+        .search-container { margin-bottom: 20px; }
+        input[type="text"] { padding: 10px; width: 300px; }
+        button { padding: 10px 20px; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        tr:hover { background-color: #f9f9f9; }
+        .no-results { color: red; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+  <center><br>
+    <h1>Employee Management System</h1>
+    {% include 'admin_header.html' %}<br>
+    <div class="search-container">
+        <form action="/adminsearchemp" method="POST">
+            <input type="text" name="emp" placeholder="Search by Name" value="{{ search_query if search_query else '' }}">
+            <button type="submit">Search</button>
+            <a href="/adminsearchemp"><button type="button">Reset</button></a>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+            <tr>
+                <td>{{ employee[0] }}</td>  <td>{{ employee[1] }}</td>  <td>{{ employee[2] }}</td>  <td>{{ employee[3] }}</td>  </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="no-results">No employees found matching your search.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+    </center>
+</body>
+</html>
