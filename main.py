@@ -18,10 +18,9 @@ db_config = {
 
 # 2. Helper function to connect to the database
 def get_db_connection():
-    # Create a simplified SSL context that accepts "self-signed" certificates
-    ctx = ssl.create_default_context()
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
+    # Define the path to the CA file (it's in the same folder as main.py)
+    # This helps Vercel find the file correctly
+    ca_path = os.path.join(os.path.dirname(__file__), 'ca.pem')
 
     return pymysql.connect(
         host=db_config['host'],
@@ -29,7 +28,7 @@ def get_db_connection():
         password=db_config['password'],
         database=db_config['database'],
         port=db_config['port'],
-        ssl=ctx # <--- Use the new "relaxed" SSL context
+        ssl={'ca': ca_path}  # <--- Point to the file we just added
     )
 
 @app.route("/")
