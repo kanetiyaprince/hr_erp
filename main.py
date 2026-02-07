@@ -1,13 +1,12 @@
 import pymysql
 import os
-
 from flask import Flask, render_template, request
 
-app = Flask("__name__")
-app.secret_key='prince'
+app = Flask(__name__)
+app.secret_key = 'prince'
 
-db_port = os.getenv('DB_PORT', '12345') 
-
+# 1. Database Configuration
+# We use .get() safely so it doesn't crash if variables are missing
 db_config = {
     'host': os.environ.get('DB_HOST', 'localhost'),
     'user': os.environ.get('DB_USER', 'root'),
@@ -17,6 +16,7 @@ db_config = {
     'ssl_ca': '/etc/ssl/certs/ca-certificates.crt'
 }
 
+# 2. Helper function to connect to the database
 def get_db_connection():
     # Check if we are on Vercel (Linux) to use SSL
     ssl_settings = {}
@@ -35,6 +35,83 @@ def get_db_connection():
 @app.route("/")
 def home():
     return render_template("index.html")
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+@app.route("/contactus")
+def contact():
+    return render_template("contactus.html")
+
+@app.route("/admin")
+def admin():
+    return render_template("adminlogin.html")
+
+@app.route("/admindashboard")
+def admindashboard():
+    return render_template("admin_dashboard.html")
+
+@app.route("/adminaddemp")
+def adminaddemp():
+    return render_template("admin_addemp.html")
+
+@app.route("/adminshowemp")
+def adminshowemp():
+    try:
+        # FIX: Use the new get_db_connection() instead of 'mysql'
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        # Query Specification
+        cur.execute('select emp_id, emp_name, emp_designation from register')
+        emplist = cur.fetchall()
+
+        # Close connections
+        cur.close()
+        conn.close()
+
+        return render_template("admin_showemp.html", recordlist=emplist)
+    except Exception as e:
+        return f"Database Error: {e}"
+
+@app.route("/adminsearchemp")
+def adminsearchemp():
+    return render_template("admin_searchemp.html")
+
+@app.route("/save", methods=['POST'])
+def save():
+    try:
+        i = request.form['eid']
+        n = request.form['ename']
+        e = request.form['email']
+        m = request.form['mob']
+        d = request.form['edesig']
+        s = request.form['esalary']
+
+        # FIX: Use the new get_db_connection() instead of 'mysql'
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        # Query Specification
+        cur.execute(
+            'INSERT INTO register(emp_id, emp_name, emp_email, emp_mobile, emp_designation, emp_salary) VALUES (%s, %s, %s, %s, %s, %s)',
+            (i, n, e, m, d, s)
+        )
+
+        # Transaction Save/Commit
+        conn.commit()
+
+        # Connection Closed
+        cur.close()
+        conn.close()
+
+        return "Successfully added employee"
+    except Exception as e:
+        return f"Error saving data: {e}"
+
+if __name__ == "__main__":
+    app.run(debug=True)    return render_template("index.html")
 
 @app.route("/about")
 def about():
