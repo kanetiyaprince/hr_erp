@@ -2,7 +2,7 @@ import pymysql
 import os
 import ssl  # <--- NEW IMPORT
 
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request, url_for
 
 app = Flask(__name__)
 app.secret_key = 'prince'
@@ -57,7 +57,7 @@ def adminaddemp():
 
 @app.route("/adminshowemp")
 def adminshowemp():
-    conn = get_connection()
+    conn = get_db_connection()
     cur = conn.cursor()
     cur.execute("SELECT emp_id, emp_name, emp_designation FROM register")
     emplist = cur.fetchall()
@@ -73,7 +73,7 @@ def adminsearchemp():
     if request.method == "POST":
         search_query = request.form.get("emp", "")
 
-        conn = get_connection()
+        conn = get_db_connection()
         cur = conn.cursor()
 
         query = "SELECT * FROM register WHERE emp_name LIKE %s"
@@ -87,7 +87,7 @@ def adminsearchemp():
 
 @app.route("/admin_update/<string:emp_id>", methods=["GET", "POST"])
 def admin_updateemp(emp_id):
-    conn = get_connection()
+    conn = get_db_connection()
     cur = conn.cursor()
 
     if request.method == "POST":
@@ -123,7 +123,7 @@ def admin_updateemp(emp_id):
 
 @app.route("/admin_deleteemp/<string:emp_id>", methods=["POST"])
 def admin_deleteemp(emp_id):
-    conn = get_connection()
+    conn = get_db_connection()
     cur = conn.cursor()
 
     cur.execute("DELETE FROM register WHERE emp_id=%s", (emp_id,))
@@ -143,7 +143,7 @@ def save():
     d = request.form["edesig"]
     s = request.form["esalary"]
 
-    conn = get_connection()
+    conn = get_db_connection()
     cur = conn.cursor()
 
     cur.execute("""
