@@ -33,11 +33,16 @@ tr:nth-child(even) {background-color: #f2f2f2;}
     <tr>
       <td>{{n[0]}}</td>
       <td>{{n[1]}}</td>
+
       <td>{{n[2]}}</td><td>
   <a href="{{ url_for('admin_updateemp', emp_id=n[0]) }}" class="btn btn-primary">
     view
   </a>
   </td>
+
+      <td>{{n[2]}}</td>
+        <td><a href="" class="btn btn-primary">view</a></td>
+    </tr>
 
 
      {% endfor %}
