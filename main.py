@@ -1,27 +1,27 @@
 import pymysql
 import os
+import ssl  # <--- NEW IMPORT
+
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
 app.secret_key = 'prince'
 
 # 1. Database Configuration
-# We use .get() safely so it doesn't crash if variables are missing
 db_config = {
     'host': os.environ.get('DB_HOST', 'localhost'),
     'user': os.environ.get('DB_USER', 'root'),
     'password': os.environ.get('DB_PASSWORD', ''),
     'database': os.environ.get('DB_NAME', 'hr_erp_db'),
-    'port': int(os.environ.get('DB_PORT', 3306)),
-    'ssl_ca': '/etc/ssl/certs/ca-certificates.crt'
+    'port': int(os.environ.get('DB_PORT', 3306))
 }
 
 # 2. Helper function to connect to the database
 def get_db_connection():
-    # Check if we are on Vercel (Linux) to use SSL
-    ssl_settings = {}
-    if os.path.exists(db_config['ssl_ca']):
-        ssl_settings = {'ssl': {'ca': db_config['ssl_ca']}}
+    # Create a simplified SSL context that accepts "self-signed" certificates
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
 
     return pymysql.connect(
         host=db_config['host'],
@@ -29,7 +29,7 @@ def get_db_connection():
         password=db_config['password'],
         database=db_config['database'],
         port=db_config['port'],
-        **ssl_settings # Unpack SSL settings if they exist
+        ssl=ctx # <--- Use the new "relaxed" SSL context
     )
 
 @app.route("/")
@@ -59,18 +59,12 @@ def adminaddemp():
 @app.route("/adminshowemp")
 def adminshowemp():
     try:
-        # FIX: Use the new get_db_connection() instead of 'mysql'
         conn = get_db_connection()
         cur = conn.cursor()
-
-        # Query Specification
         cur.execute('select emp_id, emp_name, emp_designation from register')
         emplist = cur.fetchall()
-
-        # Close connections
         cur.close()
         conn.close()
-
         return render_template("admin_showemp.html", recordlist=emplist)
     except Exception as e:
         return f"Database Error: {e}"
@@ -89,23 +83,15 @@ def save():
         d = request.form['edesig']
         s = request.form['esalary']
 
-        # FIX: Use the new get_db_connection() instead of 'mysql'
         conn = get_db_connection()
         cur = conn.cursor()
-
-        # Query Specification
         cur.execute(
             'INSERT INTO register(emp_id, emp_name, emp_email, emp_mobile, emp_designation, emp_salary) VALUES (%s, %s, %s, %s, %s, %s)',
             (i, n, e, m, d, s)
         )
-
-        # Transaction Save/Commit
         conn.commit()
-
-        # Connection Closed
         cur.close()
         conn.close()
-
         return "Successfully added employee"
     except Exception as e:
         return f"Error saving data: {e}"
