@@ -158,5 +158,11 @@ def save():
 
     return "Successfully added employee"
 
+@app.route("/debug-files")
+def debug_files():
+    files = os.listdir(os.path.dirname(__file__))
+    return "<br>".join(files)
+
+
 # if __name__ == "__main__":
 #     app.run(debug=True)
