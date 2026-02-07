@@ -2,7 +2,6 @@ import pymysql
 import os
 
 from flask import Flask, render_template, request
-from flask_mysqldb import MySQL
 
 app = Flask("__name__")
 
