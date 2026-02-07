@@ -18,16 +18,32 @@ db_config = {
 
 # 2. Helper function to connect to the database
 def get_db_connection():
-    ca_path = os.path.join(os.path.dirname(__file__), 'ca.pem')
-
-    return pymysql.connect(
-        host=db_config['host'],
-        user=db_config['user'],
-        password=db_config['password'],
-        database=db_config['database'],
-        port=db_config['port'],
-        ssl={'ca': ca_path}
-    )
+    if db_config['host'] in ['localhost', '127.0.0.1']:
+        # --- LOCAL PC MODE ---
+        # Connect explicitly WITHOUT SSL to avoid certificate errors
+        print("Connecting to Localhost (No SSL)...")
+        return pymysql.connect(
+            host=db_config['host'],
+            user=db_config['user'],
+            password=db_config['password'],
+            database=db_config['database'],
+            port=db_config['port'],
+            ssl=None  # <--- FORCE SSL OFF
+        )
+    else:
+        # --- VERCEL / CLOUD MODE ---
+        # Connect WITH SSL (Required for Aiven)
+        print("Connecting to Cloud Database (With SSL)...")
+        ca_path = os.path.join(os.path.dirname(__file__), 'ca.pem')
+        
+        return pymysql.connect(
+            host=db_config['host'],
+            user=db_config['user'],
+            password=db_config['password'],
+            database=db_config['database'],
+            port=db_config['port'],
+            ssl={'ca': ca_path} # <--- FORCE SSL ON
+        )
 
 
 
@@ -47,8 +63,12 @@ def contact():
 def admin():
     return render_template("adminlogin.html")
 
-@app.route("/admindashboard")
+@app.route("/admindashboard",methods=['POST'])
 def admindashboard():
+    if request.method=='POST':
+        user = request.form.get('user')
+        password = request.form.get('pass')
+        
     return render_template("admin_dashboard.html")
 
 @app.route("/adminaddemp")
@@ -158,11 +178,5 @@ def save():
 
     return "Successfully added employee"
 
-@app.route("/debug-files")
-def debug_files():
-    files = os.listdir(os.path.dirname(__file__))
-    return "<br>".join(files)
-
-
-# if __name__ == "__main__":
-#     app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
