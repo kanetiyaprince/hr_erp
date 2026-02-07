@@ -18,18 +18,15 @@ db_config = {
 
 # 2. Helper function to connect to the database
 def get_db_connection():
-    # Define the path to the CA file (it's in the same folder as main.py)
-    # This helps Vercel find the file correctly
-    ca_path = os.path.join(os.path.dirname(__file__), 'ca.pem')
-
     return pymysql.connect(
         host=db_config['host'],
         user=db_config['user'],
         password=db_config['password'],
         database=db_config['database'],
         port=db_config['port'],
-        ssl={'ca': ca_path}  # <--- Point to the file we just added
+        ssl={'ssl': {}}
     )
+
 
 @app.route("/")
 def home():
