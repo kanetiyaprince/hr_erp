@@ -14,13 +14,15 @@ app.config['MYSQL_DB']='hr_erp_db'
 
 mysql = MySQL(app)
 
+db_port = os.getenv('DB_PORT', '12345') 
+
 db_config = {
-    'host': 'mysql-12139fd-hr-erp.j.aivencloud.com', # Copy "Host" from Aiven
-    'user': 'avnadmin',                                         # Copy "User" from Aiven
-    'password': 'AVNS_Bpoemtss83b6e7ezoz8',                      # Copy "Password" from Aiven
-    'database': 'defaultdb',                                    # Copy "Database Name" (usually defaultdb)
-    'port': 26797,                                              # Copy "Port" (It will NOT be 3306)
-    'ssl_ca': '/etc/ssl/certs/ca-certificates.crt'              # Required for Aiven (keeps connection secure)
+    'host': os.getenv('DB_HOST', 'localhost'),
+    'user': os.getenv('DB_USER', 'root'),
+    'password': os.getenv('DB_PASSWORD', ''),
+    'database': os.getenv('DB_NAME', 'defaultdb'), # Use DB_NAME, not 'database' for the key
+    'port': int(db_port), # Now this won't crash because we gave it a default above
+    'ssl_ca': '/etc/ssl/certs/ca-certificates.crt'
 }
 
 def get_db_connection():
